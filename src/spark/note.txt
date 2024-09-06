@@ -1,0 +1,2 @@
+apt-get install openjdk-8-jdk-headless -qq   
+pip install spark-submit

@@ -1,0 +1,21 @@
+{
+    "name": "inventory-connector",
+    "config": {
+        "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+        "mongodb.connection.string": "mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set",
+        "mongodb.connection.mode": "replica_set",
+        "mongodb.user": "debezium",
+        "mongodb.password": "dbz",
+        "database.include.list": "scrabble",
+        "collection.include.list": "scrabble.articles",
+        "topic.prefix": "mongo",
+        "capture.mode": "change_streams_update_full",
+        "tasks.max": "1",
+        "schema.history.internal.kafka.bootstrap.servers": "broker-0:29092,broker-1:29093,broker-2:29094",
+        "schema.history.internal.kafka.topic": "schema-changes.scrabble",
+        "key.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "key.converter.schema.registry.url": "http://schema-registry:8081",
+        "value.converter.schema.registry.url": "http://schema-registry:8081"
+    }
+}

@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # Avro files stored in MinIO object storage
+  minio:
+    image: minio/minio
+    container_name: datalake-minio
+    hostname: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_storage:/data
+    networks:
+      my_network:
+    environment:
+      MINIO_ACCESS_KEY: minio_access_key
+      MINIO_SECRET_KEY: minio_secret_key
+    command: server --console-address ":9001" /data
+    
+  
+  spark-iceberg:
+    image: hoanglong2410/spark-iceberg:1.0.0
+    container_name: spark-iceberg
+    networks:
+      my_network:
+    depends_on:
+      - rest
+      - minio
+    volumes:
+      - ./src/spark/notebooks:/home/iceberg/notebooks/notebooks
+    ports:
+      - 8888:8888
+      - 8090:8080
+      - 8091:8081
+      - 4040:4040
+  
+  
+  rest:
+    image: tabulario/iceberg-rest
+    container_name: iceberg-rest
+    networks:
+      my_network:
+    ports:
+      - 8181:8181
+    environment:
+      - CATALOG_WAREHOUSE=s3://warehouse/
+      - CATALOG_IO__IMPL=org.apache.iceberg.aws.s3.S3FileIO
+      - CATALOG_S3_ENDPOINT=http://minio:9000
+
+
+volumes:
+  minio_storage:
+
+networks:
+  my_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
