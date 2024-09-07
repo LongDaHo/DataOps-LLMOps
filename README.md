@@ -21,7 +21,7 @@ echo "172.20.0.3 mongo1\n172.20.0.4 mongo2\n172.20.0.5 mongo3" >> /etc/hosts
 
 ```shell
 docker-compose -f stream-docker-compose.yaml up -d
-bash debezium/run.sh
+bash src/debezium/run.sh
 ```
 
 ```shell
