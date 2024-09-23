@@ -20,5 +20,5 @@ class ArticleRawModel(DataModel):
 class PostsRawModel(DataModel):
     platform: str
     content: dict
-    author_id: str | None = None
+    author_id: str
     image: Optional[str] = None

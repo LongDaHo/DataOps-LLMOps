@@ -38,6 +38,7 @@ class ArticleChunkModel(AvroDataModel):
         data = {
             "platform": self.platform,
             "author_id": self.author_id,
+            "link": self.link,
             "chunk_id": self.chunk_id,
             "chunk_content": self.chunk_content,
             "image": self.image,
@@ -60,6 +61,7 @@ class RepositoryChunkModel(AvroDataModel):
         data = {
             "platform": self.platform,
             "author_id": self.author_id,
+            "link": self.link,
             "chunk_id": self.chunk_id,
             "chunk_content": self.chunk_content,
             "image": self.image,

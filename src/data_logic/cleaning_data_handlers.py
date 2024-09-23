@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from models.base import DataModel
+from models.base import DataModel, AvroDataModel
 from models.clean import ArticleCleanedModel, PostCleanedModel, RepositoryCleanedModel
 from models.raw import ArticleRawModel, PostsRawModel, RepositoryRawModel
 from utils.cleaning import clean_text
@@ -13,7 +13,7 @@ class CleaningDataHandler(ABC):
     """
 
     @abstractmethod
-    def clean(self, data_model: DataModel) -> DataModel:
+    def clean(self, data_model: DataModel) -> AvroDataModel:
         pass
 
 

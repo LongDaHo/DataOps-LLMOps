@@ -31,10 +31,11 @@ class S3Connector:
                 obj_name = obj["Key"]
                 response = self._instance.get_object(Bucket=bucket_name, Key=obj_name)
                 object_content = response["Body"].read()
-                result.append(object_content)
+                results.append(object_content)
             return results
         except Exception:
-            logger.exception("An error occurred while reading data.")
+            logger.error("An error occurred while reading data.")
+
 
     def write_data(self, bucket, points, deserializer):
         try:
@@ -49,7 +50,7 @@ class S3Connector:
                     ContentType='application/octet-stream')
                 logger.info(f"Write file %s to minio!", filename)
         except Exception:
-            logger.exception("An error occurred while inserting data.")
+            logger.error("An error occurred while inserting data.")
 
 
     def get_bucket(self, bucket):
