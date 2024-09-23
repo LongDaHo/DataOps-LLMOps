@@ -23,6 +23,18 @@ class S3Connector:
             except ClientError as e:
                 logger.error(e)
         
+    def get_list_object(self, bucket_name):
+        try:
+            results = []
+            objects_list = self._instance.list_objects_v2(Bucket=bucket_name).get("Contents")
+            for obj in objects_list:
+                obj_name = obj["Key"]
+                response = self._instance.get_object(Bucket=bucket_name, Key=obj_name)
+                object_content = response["Body"].read()
+                result.append(object_content)
+            return results
+        except Exception:
+            logger.exception("An error occurred while reading data.")
 
     def write_data(self, bucket, points, deserializer):
         try:
@@ -39,7 +51,6 @@ class S3Connector:
         except Exception:
             logger.exception("An error occurred while inserting data.")
 
-            raise
 
     def get_bucket(self, bucket):
         self._instance.head_bucket(Bucket=bucket)
