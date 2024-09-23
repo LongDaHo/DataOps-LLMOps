@@ -13,27 +13,38 @@ services:
       - minio_storage:/data
     networks:
       my_network:
+        aliases:
+          - warehouse.minio
+          - raw.minio
     environment:
       MINIO_ACCESS_KEY: minio_access_key
       MINIO_SECRET_KEY: minio_secret_key
+      MINIO_DOMAIN: minio
     command: server --console-address ":9001" /data
     
   
   spark-iceberg:
-    image: hoanglong2410/spark-iceberg:1.0.0
+    image: hoanglong2410/spark-iceberg:2.0.0
     container_name: spark-iceberg
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'
+          memory: 6G
+    environment:
+      - AWS_ACCESS_KEY_ID=minio_access_key
+      - AWS_SECRET_ACCESS_KEY=minio_secret_key
+      - AWS_REGION=default
     networks:
       my_network:
     depends_on:
       - rest
       - minio
-    volumes:
-      - ./src/spark/notebooks:/home/iceberg/notebooks/notebooks
+    # volumes:
+      # - ./src/spark/notebooks/:/home/iceberg/notebooks/notebooks/
     ports:
       - 8888:8888
-      - 8090:8080
-      - 8091:8081
-      - 4040:4040
+      - 9090:8080
   
   
   rest:
@@ -44,9 +55,34 @@ services:
     ports:
       - 8181:8181
     environment:
+      - AWS_ACCESS_KEY_ID=minio_access_key
+      - AWS_SECRET_ACCESS_KEY=minio_secret_key
+      - AWS_REGION=default
       - CATALOG_WAREHOUSE=s3://warehouse/
       - CATALOG_IO__IMPL=org.apache.iceberg.aws.s3.S3FileIO
       - CATALOG_S3_ENDPOINT=http://minio:9000
+
+
+  mc:
+    depends_on:
+      - minio
+    image: minio/mc
+    container_name: mc
+    networks:
+      my_network:
+    environment:
+      - AWS_ACCESS_KEY_ID=minio_access_key
+      - AWS_SECRET_ACCESS_KEY=minio_secret_key
+      - AWS_REGION=default
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc config host add minio http://minio:9000 minio_access_key minio_secret_key) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc mb minio/raw;
+      /usr/bin/mc mb minio/clean;
+      /usr/bin/mc mb minio/chunk;
+      /usr/bin/mc mb minio/warehouse;
+      tail -f /dev/null
+      "
 
 
 volumes:

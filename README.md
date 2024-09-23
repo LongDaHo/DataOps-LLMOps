@@ -26,4 +26,5 @@ bash src/debezium/run.sh
 
 ```shell
 docker-compose -f docker-compose.yaml up -d
+python3 -m bytewax.run src/stream_process.py 
 ```

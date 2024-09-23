@@ -15,4 +15,10 @@ class Setting(BaseSettings):
     KAFKA_ENDPOINT: str = "localhost:9092"
     KAFKA_TOPIC: str = "mongo.scrabble.articles"
 
+    # Embeddings config
+    EMBEDDING_MODEL_ID: str = "sentence-transformers/all-MiniLM-L6-v2"
+    EMBEDDING_MODEL_MAX_INPUT_LENGTH: int = 256
+    EMBEDDING_SIZE: int = 384
+    EMBEDDING_MODEL_DEVICE: str = "cpu"
+
 settings = Setting()
