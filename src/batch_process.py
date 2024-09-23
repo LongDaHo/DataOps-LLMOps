@@ -21,6 +21,6 @@ def batch_process(obj):
         embed = EmbeddingDispatcher.dispatch_embedder(chunk)
 
 obj_list = s3.get_list_object("raw")
-Parallel(n_jobs=8, backend="threading")
-        (delayed(batch_process)(obj) 
+Parallel(n_jobs=8, backend="threading")  \
+        (delayed(batch_process)(obj)     \
         for obj in tqdm(obj_list))
