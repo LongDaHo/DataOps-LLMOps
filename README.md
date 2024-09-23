@@ -1,4 +1,4 @@
-This project is in process
+This project is in process.
 
 ## System Architecture
 <p align="center">
@@ -28,3 +28,4 @@ bash src/debezium/run.sh
 docker-compose -f docker-compose.yaml up -d
 python3 -m bytewax.run src/stream_process.py 
 ```
+Next job, add schemas to schema registry, send data to minio, qdrant and convert cleaned data to iceberg.
